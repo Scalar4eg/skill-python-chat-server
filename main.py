@@ -1,4 +1,4 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, render_template
 
 app = Flask(__name__)
 
@@ -15,14 +15,14 @@ time_17_00 = datetime.fromisoformat("2021-08-02 17:00:00").timestamp()
 time_17_30 = datetime.fromisoformat("2021-08-02 17:30:00").timestamp()
 
 test_message1 = {
-    "text": "Привет, Васек",
-    "name": "Епифан",
+    "text": "Hello, Vass",
+    "name": "Igort",
     "time": time_17_00,
 }
 
 test_message2 = {
-    "text": "Йо човащепокайфу",
-    "name": "Михаил",
+    "text": "Hello my dear friend",
+    "name": "Mike",
     "time": time_17_00,
 }
 # key + value, ключ + значение
@@ -34,11 +34,14 @@ db = [
     test_message2
 ]
 
+@app.route("/form")
+def form():
+    return render_template("form.html")
 
 # POST - как правило означает изменение данных
 # GET - запрос, который ничего не меняет
 
-@app.route("/sendMessage", methods=['POST'])
+@app.route("/sendMessage")
 def chat():
     name = request.args["name"]
     text = request.args["text"]
@@ -46,8 +49,11 @@ def chat():
     name_len = len(name)  # длина имени
     text_len = len(text)  # длина текста
     
-    if name_len > 100 or name_len == 0:
-        return abort(400)  # Невалидный запрос
+    if name_len > 100 or name_len < 3:
+        return "ERROR"  # Невалидный запрос
+
+    if text_len < 1 or text_len > 3000:
+        return "ERROR"
 
     message = {
         "name": name,
@@ -55,10 +61,7 @@ def chat():
         "time": time.time()  # таймстемп
     }
     db.append(message)  # Добавляем новое сообщение в список
-
-
-chat("Маша", "Как дела?")
-chat("Петя", "Йо, я веган")
+    return "OK"
 
 
 # Распечатать все сообщения
