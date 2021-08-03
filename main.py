@@ -1,4 +1,8 @@
+from datetime import datetime
+import json
+
 from flask import Flask, request, abort, render_template
+import time
 
 app = Flask(__name__)
 
@@ -8,35 +12,24 @@ def index_page():
     return "HELLO"
 
 
-import time
-from datetime import datetime
+db_file = "./data/db.json"
+json_db = open(db_file, "rb")
+data = json.load(json_db)
+db = data["messages"]
 
-time_17_00 = datetime.fromisoformat("2021-08-02 17:00:00").timestamp()
-time_17_30 = datetime.fromisoformat("2021-08-02 17:30:00").timestamp()
 
-test_message1 = {
-    "text": "Hello, Vass",
-    "name": "Igort",
-    "time": time_17_00,
-}
+def saveMessages():
+    data = {
+        "messages": db
+    }
+    json_db = open(db_file, "w")
+    json.dump(data, json_db)
 
-test_message2 = {
-    "text": "Hello my dear friend",
-    "name": "Mike",
-    "time": time_17_00,
-}
-# key + value, ключ + значение
-
-# Database - база данных с сообщениями чата
-# Список сообщений
-db = [
-    test_message1,
-    test_message2
-]
 
 @app.route("/form")
 def form():
     return render_template("form.html")
+
 
 # POST - как правило означает изменение данных
 # GET - запрос, который ничего не меняет
@@ -48,7 +41,7 @@ def chat():
 
     name_len = len(name)  # длина имени
     text_len = len(text)  # длина текста
-    
+
     if name_len > 100 or name_len < 3:
         return "ERROR"  # Невалидный запрос
 
@@ -61,6 +54,8 @@ def chat():
         "time": time.time()  # таймстемп
     }
     db.append(message)  # Добавляем новое сообщение в список
+    saveMessages()
+
     return "OK"
 
 
