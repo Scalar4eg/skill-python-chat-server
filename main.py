@@ -1,6 +1,6 @@
+import uuid
 from datetime import datetime
 import json
-
 from flask import Flask, request, abort, render_template
 import time
 
@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index_page():
-    return "HELLO"
+    return "Hello, welcome to Skillbox Chat v1"
 
 
 db_file = "./data/db.json"
@@ -35,7 +35,7 @@ def form():
 # GET - запрос, который ничего не меняет
 
 @app.route("/sendMessage")
-def chat():
+def send_message():
     name = request.args["name"]
     text = request.args["text"]
 
@@ -49,6 +49,7 @@ def chat():
         return "ERROR"
 
     message = {
+        "id": str(uuid.uuid4()),
         "name": name,
         "text": text,
         "time": time.time()  # таймстемп
@@ -90,3 +91,4 @@ def get_messages():
 # https://docs.python.org/3/
 
 app.run()
+#app.run(host="0.0.0.0", port=int("80"))
