@@ -1,0 +1,24 @@
+1. Зайти в консоль Google Cloud https://console.cloud.google.com/
+2. Создать проект, дать ему имя
+3. Заходим в Compute Engine: https://console.cloud.google.com/compute/instances
+4. Создаем VM instance
+    Имя
+    Регион
+    Machine type = micro
+    Allow HTTP traffic (V)
+    Networking => Network Interface => External IP => Create IP
+    Create!
+
+5. Создать раздел в Cloud Storage (New Bucket), например skill_chat_code
+В main.py указать
+    app.run(host="0.0.0.0", port=80)
+
+Загрузить код в Cloud Storage
+
+6. Настроить
+    Зайти по SSH
+    sudo su
+    apt-get install python3-pip
+    python3 -m pip install flask
+    gsutil cp -r gs://skill_chat_code/* ./
+    python3 main.py

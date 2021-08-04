@@ -90,5 +90,4 @@ def get_messages():
 
 # https://docs.python.org/3/
 
-app.run()
-#app.run(host="0.0.0.0", port=int("80"))
+app.run(host="0.0.0.0", port=80)
